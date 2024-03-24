@@ -2,8 +2,6 @@ import socket
 import time
 import sys
 
-# Server address and port
-#server_ip = '127.0.0.1'
 server_port = 12000
 
 # Create a UDP socket
@@ -16,7 +14,6 @@ server_ip = sys.argv[1]
 counter = 0
 lost = 0
 
-#print("test" + server_ip + "test")
 if(argsCount > 1):
     if "-a" in sys.argv:
         client_socket.connect((server_ip,server_port))
