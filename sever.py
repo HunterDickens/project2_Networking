@@ -15,14 +15,14 @@ print("The server is ready to receive on port:", server_port)
 
 while True:
     # Generate a random number to simulate packet loss
-    rand = random.randint(0, 10)
+    rand = random.randint(1, 10)
     message, address = server_socket.recvfrom(buffer_size)
 
     # Simulate network delay
     time.sleep(random.random() * 2)
 
-    # Respond only if rand is less than 4, simulating 60% response rate
-    if rand < 4:
+    # Respond only if rand is less than 7, simulating 70% response rate
+    if rand < 7:
         server_socket.sendto(message, address)
 
 
