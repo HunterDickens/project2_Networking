@@ -4,25 +4,24 @@ import time
 
 def ping(server_ip, server_port, a):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-# Set the socket timeout for 1 second
     client_socket.settimeout(.5)
     counter = 0
     lost = 0
 
-    if(a):
-        client_socket.connect((server_ip,server_port))
-        IPToCheck = client_socket.getpeername()
-        name = socket.gethostbyaddr(IPToCheck[0])[0]
+    if a:
+        try:
+            name = socket.gethostbyaddr(server_ip)[0]
+        except socket.herror:
+            name = "Hostname could not be resolved"
         print("Hostname: " + name)
-    # Ping for 10 pings
+
+
     message = bytes("9c$&gK!2z@%R7*BpH@XvY3gfE6^+aUQw", "utf-8")
     totalTime = 0
     array = []
     numOfPings = 4
     for sequence_number in range(1,(numOfPings+1)):
 
-    #32 byte string
         try:
             send_time = time.time()*1000.0
             # Send the ping message
