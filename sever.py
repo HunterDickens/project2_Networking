@@ -17,10 +17,10 @@ while True:
     # Generate a random number to simulate packet loss
     rand = random.randint(0, 10)
     message, address = server_socket.recvfrom(buffer_size)
-    
+
     # Simulate network delay
     time.sleep(random.random() * 2)
-    
+
     # Respond only if rand is less than 4, simulating 60% response rate
     if rand < 4:
         server_socket.sendto(message, address)

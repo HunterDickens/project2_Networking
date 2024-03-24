@@ -2,10 +2,14 @@ from gooey import Gooey, GooeyParser
 import socket
 import time
 
-def ping(server_ip, server_port):
+def ping(server_ip, server_port, a):
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    client_socket.settimeout(1)
-
+    client_socket.settimeout(2)
+    if(a):
+            client_socket.connect((server_ip,server_port))
+            IPToCheck = client_socket.getpeername()
+            name = socket.gethostbyaddr(IPToCheck[0])[0]
+            print("Hostname: " + name)
     for sequence_number in range(1, 11):
         send_time = time.time()
         message = f'Ping {sequence_number} {send_time}'.encode()
@@ -41,10 +45,16 @@ def tracert(server_ip, server_port, max_hops):
 def main():
     parser = GooeyParser(description="Simulated Ping and Traceroute")
     subparsers = parser.add_subparsers(help='commands', dest='command')
-    
+
     ping_parser = subparsers.add_parser('ping')
     ping_parser.add_argument('server_ip', type=str, help='Server IP Address')
     ping_parser.add_argument('server_port', type=int, help='Server Port')
+    parser.add_argument('-a',
+                        widget='CheckBox',
+                        default = False,
+                        action = "store_true",
+                        help='Resolve address to hostname')
+    ping_parser.add_argument('-a', action='store_true', help = 'resolve addresses to hostname')
 
     tracert_parser = subparsers.add_parser('tracert')
     tracert_parser.add_argument('server_ip', type=str, help='Server IP Address')
@@ -54,7 +64,7 @@ def main():
     args = parser.parse_args()
 
     if args.command == 'ping':
-        ping(args.server_ip, args.server_port)
+        ping(args.server_ip, args.server_port, args.a)
     elif args.command == 'tracert':
         tracert(args.server_ip, args.server_port, args.max_hops)
 
