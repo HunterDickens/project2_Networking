@@ -5,7 +5,7 @@ import time
 # Server settings
 server_ip = '127.0.0.1'
 server_port = 12000
-buffer_size = 1024
+buffer_size = 32
 
 # Create a UDP socket
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -19,7 +19,7 @@ while True:
     message, address = server_socket.recvfrom(buffer_size)
 
     # Simulate network delay
-    time.sleep(random.random() * 2)
+    time.sleep(random.random() * .2)
 
     # Respond only if rand is less than 7, simulating 70% response rate
     if rand < 7:
