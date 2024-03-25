@@ -59,27 +59,30 @@ def ping(server_ip, server_port, a):
 pass
 
 def tracert(server_ip, server_port, max_hops):
-    # Check if we're in simulation mode
-    if server_ip == "127.0.0.1":
-        # Simulate tracerouting for demonstration purposes
-        print(f"Simulated Tracerouting with a maximum of {max_hops} hops:\n")
-        for hop in range(1, max_hops + 1):
-            router_ip = f"192.168.0.{hop}"
-            rtt1 = round(random.uniform(10, 100), 2)
-            rtt2 = round(random.uniform(10, 100), 2)
-            rtt3 = round(random.uniform(10, 100), 2)
-            print(f"{hop} {router_ip}  {rtt1} ms  {rtt2} ms  {rtt3} ms")
-    else:
-        # Perform real traceroute operation
-        command = ['traceroute', '-m', str(max_hops)] if platform.system().lower() != 'windows' else ['tracert', '-h', str(max_hops)]
-        command.append(server_ip)  # Append the target IP address/host to the command
-        
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+# Set the socket timeout for 1 second
+    client_socket.settimeout(1)
+
+    print(f"Tracing route to {server_ip} over a maximum of {max_hops} hops:\n")
+
+    for ttl in range(1, max_hops + 1):
+        send_time = time.time()
+        message = 'tracingRoute'.encode()
+
         try:
-            print(f"Tracerouting to {server_ip} with a maximum of {max_hops} hops:\n")
-            output = subprocess.check_output(command, stderr=subprocess.STDOUT, text=True, shell=True)
-            print(output)
-        except subprocess.CalledProcessError as e:
-            print(f"Failed to execute traceroute: {e.output}")
+            # Send the "tracert" message with simulated TTL
+            client_socket.sendto(message, (server_ip, server_port))
+            # Receive the server response
+            modified_message, server_address = client_socket.recvfrom(1024)
+            rtt = time.time() - send_time
+            print(f"Hop {ttl}: Reply from {modified_message.decode()} RTT = {rtt:.3f}s")
+        except socket.timeout:
+            print(f"Hop {ttl}: Request timed out")
+
+    # Close the socket
+    client_socket.close()
+
 
 
 
